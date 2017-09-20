@@ -52,7 +52,7 @@ function get_canonical_url($args, $keys) {
   }
   return [
     'pre' => 'https://'.$hostname,
-    'suf' => $suff
+    'suf' => $suf
   ];
 }
 
@@ -70,7 +70,7 @@ function parse_args() {
 }
 
 function render($data) {
-  return '<!DOCTYPE HTML><html>\
+  return '<!DOCTYPE HTML><html>
   <head>
   <title>'.$data['title'].'</title>
   <meta name="description" content="'.$data['description'].'" />
