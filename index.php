@@ -73,13 +73,12 @@ function render($data) {
   return '<!DOCTYPE HTML><html>
   <head>
   <title>'.$data['title'].'</title>
-  <meta name="description" content="'.$data['description'].'" />
   <meta name="twitter:card" value="summary">
   <meta property="og:title" content="'.$data['title'].'" />
   <meta property="og:type" content="video" />
   <meta property="og:url" content="'.$data['url']['pre'].$data['url']['suf'].'" />
   <meta property="og:image" content="'.$data['image'].'" />
-  <meta property="og:description" content="'.$data['description'].'" />
+  <meta name="description" property="og:description" content="'.$data['description'].'" />
   </head>
   <body>
   <script type="text/javascript">document.location.href = "https://hyww.github.io/Noti/#'.$data['url']['suf'].'/view";</script>
