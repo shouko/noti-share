@@ -5,20 +5,33 @@ function err($code, $msg = '') {
   die($msg);
 }
 
+function http_get($url) {
+  $opts = [
+    'http' => [
+      'method' => 'GET',
+      'header' => [
+        'User-Agent: PHP'
+      ]
+    ]
+  ];
+  $context = stream_context_create($opts);
+  return file_get_contents($url, false, $context);
+}
+
 function filter_html($data) {
   return htmlspecialchars($data, ENT_COMPAT, 'UTF-8');
 }
 
 function get_gist_text($gist_id) {
   if (!preg_match('/^[a-f0-9]{32}$/', $gist_id)) return err(400);
-  $data = json_decode(file_get_contents('https://api.github.com/gists/'.$gist_id), 1);
+  $data = json_decode(http_get('https://api.github.com/gists/'.$gist_id), 1);
   if (!isset($data['files']['file.lrc'])) return err(404);
   return filter_html($data['files']['file.lrc']);
 }
 
 function get_youtube_data($vid) {
   if (!preg_match('/^[a-zA-Z0-9_-]+$/', $vid)) return err(400);
-  $data = file_get_contents('https://www.youtube.com/watch?v='.$vid);
+  $data = http_get('https://www.youtube.com/watch?v='.$vid);
   $data = explode('</title>', $data)[0];
   $data = explode('<title>', $data);
   if (count($data) < 2) return err(404);
