@@ -23,18 +23,18 @@ function filter_html($data) {
 }
 
 function get_gist_text($gist_id) {
-  if (!preg_match('/^[a-f0-9]{32}$/', $gist_id)) return err(400);
+  if (!preg_match('/^[a-f0-9]{32}$/', $gist_id)) return err(400, 'Invalid Gist ID.');
   $data = json_decode(http_get('https://api.github.com/gists/'.$gist_id), 1);
-  if (!isset($data['files']['file.lrc'])) return err(404);
-  return filter_html($data['files']['file.lrc']);
+  if (!isset($data['files']) || count($data['files']) < 1) return err(404, 'Gist not found.');
+  return filter_html(reset($data['files'])['content']);
 }
 
 function get_youtube_data($vid) {
-  if (!preg_match('/^[a-zA-Z0-9_-]+$/', $vid)) return err(400);
+  if (!preg_match('/^[a-zA-Z0-9_-]+$/', $vid)) return err(400, 'Invalid YouTube ID.');
   $data = http_get('https://www.youtube.com/watch?v='.$vid);
   $data = explode('</title>', $data)[0];
   $data = explode('<title>', $data);
-  if (count($data) < 2) return err(404);
+  if (count($data) < 2) return err(404, 'YouTube video not found.');
   return [
     'title' => filter_html($data[1]),
     'image' => 'https://i.ytimg.com/vi/'.$vid.'/maxresdefault.jpg'
@@ -88,7 +88,7 @@ function render($data) {
 }
 
 $args = parse_args();
-if (!isset($args['y']) || !isset($args['g'])) return err(400);
+if (!isset($args['y']) || !isset($args['g'])) return err(400, 'Invalid arguments.');
 
 $yt = get_youtube_data($args['y']);
 $gist = get_gist_text($args['g']);
